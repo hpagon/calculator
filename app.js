@@ -10,6 +10,7 @@ let numIndex = 0;
 let numStack = [];
 let opStack = [];
 let canClear = false;
+let currVal;
 
 function add(num1, num2) {
   return num1 + num2;
@@ -31,6 +32,8 @@ function operate(num1, num2, operator) {
   let newNum1 = parseFloat(num1);
   let newNum2 = parseFloat(num2);
   console.log(`Num1: ${newNum1} - Num2: ${newNum2}`);
+  console.log(numStack);
+  console.log(opStack);
   switch (operator) {
     case "+":
       return add(newNum1, newNum2);
@@ -48,8 +51,27 @@ function operate(num1, num2, operator) {
 function findNum() {
   opIndex = working.textContent.length;
   let number = working.textContent.slice(numIndex, opIndex);
+  numStack.pop();
   numStack.push(number);
   numIndex = opIndex + 1;
+}
+
+function lengthenNum() {
+  if (numStack.length === 1) {
+    let number = working.textContent.slice(
+      numIndex,
+      working.textContent.length
+    );
+    numStack.push(number);
+  } else if (numStack.length === 2) {
+    let number = working.textContent.slice(
+      numIndex,
+      working.textContent.length
+    );
+    console.log("popped");
+    numStack.pop();
+    numStack.push(number);
+  }
 }
 
 function reset() {
@@ -59,24 +81,35 @@ function reset() {
   opStack = [];
   numIndex = 0;
   opIndex = 0;
+  currVal = NaN;
 }
 
 function updateResult() {
-  if (numStack.length === 2 && result.textContent === "") {
+  if (numStack.length === 2 && !currVal) {
     console.log("triggered");
     console.log(operate(numStack[0], numStack[1], opStack[0]));
-    result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
+    currVal = operate(numStack[0], numStack[1], opStack[0]);
+    result.textContent = currVal;
     numStack.shift();
     opStack.shift();
   } else if (numStack.length === 2) {
     console.log("here");
-    result.textContent = `${operate(
-      result.textContent,
-      numStack[1],
-      opStack[0]
-    )}`;
+    currVal = operate(currVal, numStack[1], opStack[0]);
+    result.textContent = currVal;
     numStack.shift();
     opStack.shift();
+  }
+}
+
+function previewResult() {
+  if (numStack.length === 2 && !currVal) {
+    console.log("triggered 2");
+    console.log(operate(numStack[0], numStack[1], opStack[0]));
+    result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
+  }
+  else if (numStack.length === 2) {
+    console.log("here 2");
+    result.textContent = `${operate(currVal, numStack[1], opStack[0])}`;
   }
 }
 
@@ -88,7 +121,11 @@ for (let num of numbers) {
       working.textContent = num.textContent;
     } else if (working.textContent === "0")
       working.textContent = num.textContent;
-    else working.textContent += num.textContent;
+    else {
+      working.textContent += num.textContent;
+      lengthenNum();
+      previewResult();
+    }
   });
 }
 
@@ -106,8 +143,8 @@ clear.addEventListener("click", reset);
 
 equals.addEventListener("click", () => {
   if (canClear === true) return;
-  working.textContent += equals.textContent;
   findNum();
+  working.textContent += equals.textContent;
   updateResult();
   let temp = result.textContent;
   reset();
