@@ -3,6 +3,7 @@ const operators = document.querySelectorAll(".operator");
 const working = document.querySelector("#working");
 const result = document.querySelector("#result");
 const equals = document.querySelector("#eq");
+const clear = document.querySelector("#C");
 let operator;
 let opIndex = 0;
 let numIndex = 0;
@@ -26,8 +27,9 @@ function divide(num1, num2) {
 }
 
 function operate(num1, num2, operator) {
-  let newNum1 = parseInt(num1);
-  let newNum2 = parseInt(num2);
+  let newNum1 = parseFloat(num1);
+  let newNum2 = parseFloat(num2);
+  console.log(`Num1: ${newNum1} - Num2: ${newNum2}`);
   switch (operator) {
     case "+":
       return add(newNum1, newNum2);
@@ -47,6 +49,15 @@ function findNum() {
   let number = working.textContent.slice(numIndex, opIndex);
   numStack.push(number);
   numIndex = opIndex + 1;
+}
+
+function reset() {
+  result.textContent = "";
+  working.textContent = 0;
+  numStack = [];
+  opStack = [];
+  numIndex = 0;
+  opIndex = 0;
 }
 
 function updateResult() {
@@ -70,7 +81,8 @@ function updateResult() {
 
 for (let num of numbers) {
   num.addEventListener("click", () => {
-    working.textContent += num.textContent;
+    if (working.textContent == "0") working.textContent = num.textContent;
+    else working.textContent += num.textContent;
   });
 }
 
@@ -83,8 +95,13 @@ for (let op of operators) {
   });
 }
 
+clear.addEventListener("click", reset);
+
 equals.addEventListener("click", () => {
   working.textContent += equals.textContent;
   findNum();
   updateResult();
+  let temp = result.textContent;
+  reset();
+  working.textContent = temp;
 });
