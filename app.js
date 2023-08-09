@@ -9,6 +9,7 @@ let opIndex = 0;
 let numIndex = 0;
 let numStack = [];
 let opStack = [];
+let canClear = false;
 
 function add(num1, num2) {
   return num1 + num2;
@@ -81,13 +82,19 @@ function updateResult() {
 
 for (let num of numbers) {
   num.addEventListener("click", () => {
-    if (working.textContent == "0") working.textContent = num.textContent;
+    if (canClear === true) {
+      reset();
+      canClear = false;
+      working.textContent = num.textContent;
+    } else if (working.textContent === "0")
+      working.textContent = num.textContent;
     else working.textContent += num.textContent;
   });
 }
 
 for (let op of operators) {
   op.addEventListener("click", () => {
+    canClear = false;
     findNum();
     opStack.push(op.textContent);
     working.textContent += op.textContent;
@@ -98,10 +105,12 @@ for (let op of operators) {
 clear.addEventListener("click", reset);
 
 equals.addEventListener("click", () => {
+  if (canClear === true) return;
   working.textContent += equals.textContent;
   findNum();
   updateResult();
   let temp = result.textContent;
   reset();
   working.textContent = temp;
+  canClear = true;
 });
