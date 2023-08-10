@@ -51,9 +51,11 @@ function operate(num1, num2, operator) {
 function findNum() {
   opIndex = working.textContent.length;
   let number = working.textContent.slice(numIndex, opIndex);
+  if (number === "") return number;
   numStack.pop();
   numStack.push(number);
   numIndex = opIndex + 1;
+  return number;
 }
 
 function lengthenNum() {
@@ -106,8 +108,7 @@ function previewResult() {
     console.log("triggered 2");
     console.log(operate(numStack[0], numStack[1], opStack[0]));
     result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
-  }
-  else if (numStack.length === 2) {
+  } else if (numStack.length === 2) {
     console.log("here 2");
     result.textContent = `${operate(currVal, numStack[1], opStack[0])}`;
   }
@@ -132,9 +133,16 @@ for (let num of numbers) {
 for (let op of operators) {
   op.addEventListener("click", () => {
     canClear = false;
-    findNum();
-    opStack.push(op.textContent);
+    if (findNum() === "") {
+      console.log("here?");
+      opStack.pop();
+      working.textContent = working.textContent.slice(
+        0,
+        working.textContent.length - 1
+      );
+    }
     working.textContent += op.textContent;
+    opStack.push(op.textContent);
     updateResult();
   });
 }
