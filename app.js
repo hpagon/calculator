@@ -51,6 +51,7 @@ function operate(num1, num2, operator) {
 function findNum() {
   opIndex = working.textContent.length;
   let number = working.textContent.slice(numIndex, opIndex);
+  console.log(number);
   if (number === "") return number;
   numStack.pop();
   numStack.push(number);
@@ -83,11 +84,11 @@ function reset() {
   opStack = [];
   numIndex = 0;
   opIndex = 0;
-  currVal = NaN;
+  currVal = undefined;
 }
 
 function updateResult() {
-  if (numStack.length === 2 && !currVal) {
+  if (numStack.length === 2 && currVal === undefined) {
     console.log("triggered");
     console.log(operate(numStack[0], numStack[1], opStack[0]));
     currVal = operate(numStack[0], numStack[1], opStack[0]);
@@ -104,7 +105,7 @@ function updateResult() {
 }
 
 function previewResult() {
-  if (numStack.length === 2 && !currVal) {
+  if (numStack.length === 2 && currVal === undefined) {
     console.log("triggered 2");
     console.log(operate(numStack[0], numStack[1], opStack[0]));
     result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
@@ -151,11 +152,14 @@ clear.addEventListener("click", reset);
 
 equals.addEventListener("click", () => {
   if (canClear === true) return;
-  findNum();
-  working.textContent += equals.textContent;
-  updateResult();
-  let temp = result.textContent;
-  reset();
-  working.textContent = temp;
-  canClear = true;
+  if (result.textContent === "") return;
+  else {
+    let num = findNum();
+    console.log("but here???");
+    updateResult();
+    let temp = result.textContent;
+    reset();
+    working.textContent = temp;
+    canClear = true;
+  }
 });
