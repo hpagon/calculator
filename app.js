@@ -4,6 +4,7 @@ const working = document.querySelector("#working");
 const result = document.querySelector("#result");
 const equals = document.querySelector("#eq");
 const clear = document.querySelector("#C");
+const decimal = document.querySelector("#decimal");
 let operator;
 let opIndex = 0;
 let numIndex = 0;
@@ -11,6 +12,7 @@ let numStack = [];
 let opStack = [];
 let canClear = false;
 let currVal;
+let canDec = true;
 
 function add(num1, num2) {
   return num1 + num2;
@@ -31,9 +33,9 @@ function divide(num1, num2) {
 function operate(num1, num2, operator) {
   let newNum1 = parseFloat(num1);
   let newNum2 = parseFloat(num2);
-  console.log(`Num1: ${newNum1} - Num2: ${newNum2}`);
-  console.log(numStack);
-  console.log(opStack);
+  //   console.log(`Num1: ${newNum1} - Num2: ${newNum2}`);
+  //   console.log(numStack);
+  //   console.log(opStack);
   switch (operator) {
     case "+":
       return add(newNum1, newNum2);
@@ -51,7 +53,7 @@ function operate(num1, num2, operator) {
 function findNum() {
   opIndex = working.textContent.length;
   let number = working.textContent.slice(numIndex, opIndex);
-  console.log(number);
+  //   console.log(number);
   if (number === "") return number;
   numStack.pop();
   numStack.push(number);
@@ -71,7 +73,7 @@ function lengthenNum() {
       numIndex,
       working.textContent.length
     );
-    console.log("popped");
+    // console.log("popped");
     numStack.pop();
     numStack.push(number);
   }
@@ -87,31 +89,48 @@ function reset() {
   currVal = undefined;
 }
 
+function isInt(num) {
+  return num % 1 === 0;
+}
+
 function updateResult() {
   if (numStack.length === 2 && currVal === undefined) {
-    console.log("triggered");
-    console.log(operate(numStack[0], numStack[1], opStack[0]));
-    currVal = operate(numStack[0], numStack[1], opStack[0]);
+    // console.log("triggered");
+    // console.log(operate(numStack[0], numStack[1], opStack[0]));
+    // currVal = operate(numStack[0], numStack[1], opStack[0]);
+    let num = operate(numStack[0], numStack[1], opStack[0]);
+    if (isInt(num)) currVal = num;
+    else currVal = parseFloat(num.toFixed(10));
     result.textContent = currVal;
     numStack.shift();
     opStack.shift();
   } else if (numStack.length === 2) {
-    console.log("here");
-    currVal = operate(currVal, numStack[1], opStack[0]);
+    // console.log("here");
+    let num = operate(currVal, numStack[1], opStack[0]);
+    if (isInt(num)) currVal = num;
+    else currVal = parseFloat(num.toFixed(10));
+    // currVal = operate(currVal, numStack[1], opStack[0]);
     result.textContent = currVal;
     numStack.shift();
     opStack.shift();
   }
+  canDec = true;
 }
 
 function previewResult() {
   if (numStack.length === 2 && currVal === undefined) {
-    console.log("triggered 2");
-    console.log(operate(numStack[0], numStack[1], opStack[0]));
-    result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
+    // console.log("triggered 2");
+    // console.log(operate(numStack[0], numStack[1], opStack[0]));
+    // result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
+    let num = operate(numStack[0], numStack[1], opStack[0]);
+    if (isInt(num)) result.textContent = num;
+    else result.textContent = parseFloat(num.toFixed(10));
   } else if (numStack.length === 2) {
-    console.log("here 2");
-    result.textContent = `${operate(currVal, numStack[1], opStack[0])}`;
+    // console.log("here 2");
+    // result.textContent = `${operate(currVal, numStack[1], opStack[0])}`;
+    let num = operate(currVal, numStack[1], opStack[0]);
+    if (isInt(num)) result.textContent = num;
+    else result.textContent = parseFloat(num.toFixed(10));
   }
 }
 
@@ -135,7 +154,7 @@ for (let op of operators) {
   op.addEventListener("click", () => {
     canClear = false;
     if (findNum() === "") {
-      console.log("here?");
+      //   console.log("here?");
       opStack.pop();
       working.textContent = working.textContent.slice(
         0,
@@ -155,11 +174,18 @@ equals.addEventListener("click", () => {
   if (result.textContent === "") return;
   else {
     let num = findNum();
-    console.log("but here???");
+    // console.log("but here???");
     updateResult();
     let temp = result.textContent;
     reset();
     working.textContent = temp;
     canClear = true;
+  }
+});
+
+decimal.addEventListener("click", () => {
+  if (canDec) {
+    working.textContent += decimal.textContent;
+    canDec = false;
   }
 });
