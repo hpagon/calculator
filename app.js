@@ -13,6 +13,7 @@ let opStack = [];
 let canClear = false;
 let currVal;
 let canDec = true;
+let divByZero = false;
 
 function add(num1, num2) {
   return num1 + num2;
@@ -94,6 +95,11 @@ function isInt(num) {
 }
 
 function updateResult() {
+  if (parseFloat(numStack[1]) === 0) {
+    reset();
+    result.textContent = "Can't divide by 0";
+    divByZero = true;
+  }
   if (numStack.length === 2 && currVal === undefined) {
     // console.log("triggered");
     // console.log(operate(numStack[0], numStack[1], opStack[0]));
@@ -118,7 +124,9 @@ function updateResult() {
 }
 
 function previewResult() {
-  if (numStack.length === 2 && currVal === undefined) {
+  if (parseFloat(numStack[1]) === 0) {
+    result.textContent = "";
+  } else if (numStack.length === 2 && currVal === undefined) {
     // console.log("triggered 2");
     // console.log(operate(numStack[0], numStack[1], opStack[0]));
     // result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
@@ -136,6 +144,7 @@ function previewResult() {
 
 for (let num of numbers) {
   num.addEventListener("click", () => {
+    divByZero = false;
     if (canClear === true) {
       reset();
       canClear = false;
@@ -152,6 +161,7 @@ for (let num of numbers) {
 
 for (let op of operators) {
   op.addEventListener("click", () => {
+    if (divByZero === true) return;
     canClear = false;
     if (findNum() === "") {
       //   console.log("here?");
@@ -164,15 +174,26 @@ for (let op of operators) {
     working.textContent += op.textContent;
     opStack.push(op.textContent);
     updateResult();
+    if (divByZero === true) {
+      let temp = result.textContent;
+      reset();
+      working.textContent = temp;
+      canClear = true;
+    }
   });
 }
 
-clear.addEventListener("click", reset);
+clear.addEventListener("click", reset, () => {
+  divByZero = false;
+});
 
 equals.addEventListener("click", () => {
   if (canClear === true) return;
-  if (result.textContent === "") return;
+  //   console.log("here1");
+  //   if (result.textContent === "") return;
+  if (numStack.length < 2) return;
   else {
+    // console.log("here2");
     let num = findNum();
     // console.log("but here???");
     updateResult();
@@ -185,6 +206,11 @@ equals.addEventListener("click", () => {
 
 decimal.addEventListener("click", () => {
   if (canDec) {
+    divByZero = false;
+    if (canClear === true) {
+      reset();
+      canClear = false;
+    }
     working.textContent += decimal.textContent;
     canDec = false;
   }
