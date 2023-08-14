@@ -6,6 +6,7 @@ const equals = document.querySelector("#eq");
 const clear = document.querySelector("#C");
 const decimal = document.querySelector("#decimal");
 const del = document.querySelector("#del");
+const sign = document.querySelector("#sign");
 let operator;
 let opIndex = 0;
 let numIndex = 0;
@@ -58,11 +59,19 @@ function operate(num1, num2, operator) {
 }
 
 function findNum() {
+  let lastChar = working.textContent[working.textContent.length];
+  if (
+    lastChar === "+" ||
+    lastChar === "-" ||
+    lastChar === "x" ||
+    lastChar === "/"
+  )
+    return "";
   opIndex = working.textContent.length;
   opIndexHistory.push(opIndex);
   let number = working.textContent.slice(numIndex, opIndex);
   //   console.log(number);
-  if (number === "") return number;
+  // if (number === "") return number;
   numStack.pop();
   numStack.push(number);
   numIndex = opIndex + 1;
@@ -183,6 +192,7 @@ for (let op of operators) {
       //   console.log("here?");
       opIndexHistory.pop();
       opStack.pop();
+      opHistory.pop();
       working.textContent = working.textContent.slice(
         0,
         working.textContent.length - 1
@@ -241,13 +251,14 @@ del.addEventListener("click", () => {
     reset();
     canClear = false;
     working.textContent += 0;
-  } 
-  else if(opIndex === working.textContent.length - 1 && opHistory.length === 1) {
+  } else if (
+    opIndex === working.textContent.length - 1 &&
+    opHistory.length === 1
+  ) {
     let temp = working.textContent;
     reset();
     working.textContent = temp;
-  }
-  else if (opIndex === working.textContent.length - 1) {
+  } else if (opIndex === working.textContent.length - 1) {
     // Reset opstack and opIndex to what it was before op that was removed was placed
     opIndexHistory.pop();
     opHistory.pop();
@@ -275,4 +286,39 @@ del.addEventListener("click", () => {
     0,
     working.textContent.length - 1
   );
+  let lastChar = working.textContent[working.textContent.length - 1];
+  if (
+    lastChar === "+" ||
+    lastChar === "-" ||
+    lastChar === "x" ||
+    lastChar === "/"
+  ) {
+    numStack.pop();
+    numHistory.pop();
+  }
 });
+
+sign.addEventListener("click", () => {
+  if (numIndex === working.textContent.length) {
+    working.textContent += "-";
+  } else if (working.textContent.charAt(numIndex) === "-") {
+    console.log("true");
+    let pre = working.textContent.slice(0, numIndex);
+    let post = working.textContent.slice(numIndex + 1);
+    console.log(pre);
+    console.log(post);
+    working.textContent = `${pre}${post}`;
+  } else {
+    let pre = working.textContent.slice(0, numIndex);
+    let post = working.textContent.slice(numIndex);
+    working.textContent = `${pre}-${post}`;
+  }
+});
+
+// switch operators, delete operator, place operator
+// need to create new replace operator function
+// op index is ahead by 1, throws everything off
+
+
+
+// is this really the new branch??
