@@ -5,6 +5,7 @@ const result = document.querySelector("#result");
 const equals = document.querySelector("#eq");
 const clear = document.querySelector("#C");
 const decimal = document.querySelector("#decimal");
+const del = document.querySelector("#del");
 let operator;
 let opIndex = 0;
 let numIndex = 0;
@@ -14,6 +15,11 @@ let canClear = false;
 let currVal;
 let canDec = true;
 let divByZero = false;
+let numHistory = [];
+let numIndexHistory = [0];
+let opHistory = [];
+let opIndexHistory = [0];
+currValHistory = [];
 
 function add(num1, num2) {
   return num1 + num2;
@@ -53,17 +59,21 @@ function operate(num1, num2, operator) {
 
 function findNum() {
   opIndex = working.textContent.length;
+  opIndexHistory.push(opIndex);
   let number = working.textContent.slice(numIndex, opIndex);
   //   console.log(number);
   if (number === "") return number;
   numStack.pop();
   numStack.push(number);
   numIndex = opIndex + 1;
+  numIndexHistory.push(numIndex);
+  numHistory.push(number);
   return number;
 }
 
 function lengthenNum() {
   if (numStack.length === 1) {
+    console.log(":(");
     let number = working.textContent.slice(
       numIndex,
       working.textContent.length
@@ -74,7 +84,7 @@ function lengthenNum() {
       numIndex,
       working.textContent.length
     );
-    // console.log("popped");
+    console.log("popped");
     numStack.pop();
     numStack.push(number);
   }
@@ -88,6 +98,11 @@ function reset() {
   numIndex = 0;
   opIndex = 0;
   currVal = undefined;
+  opHistory = [];
+  opIndexHistory = [0];
+  numHistory = [];
+  numIndexHistory = [0];
+  currValHistory = [];
 }
 
 function isInt(num) {
@@ -120,6 +135,7 @@ function updateResult() {
     numStack.shift();
     opStack.shift();
   }
+  currValHistory.push(currVal);
   canDec = true;
 }
 
@@ -165,6 +181,7 @@ for (let op of operators) {
     canClear = false;
     if (findNum() === "") {
       //   console.log("here?");
+      opIndexHistory.pop();
       opStack.pop();
       working.textContent = working.textContent.slice(
         0,
@@ -173,6 +190,7 @@ for (let op of operators) {
     }
     working.textContent += op.textContent;
     opStack.push(op.textContent);
+    opHistory.push(op.textContent);
     updateResult();
     if (divByZero === true) {
       let temp = result.textContent;
@@ -214,4 +232,47 @@ decimal.addEventListener("click", () => {
     working.textContent += decimal.textContent;
     canDec = false;
   }
+});
+
+del.addEventListener("click", () => {
+  console.log("deleting");
+  if (canClear === true || working.textContent.length === 1) {
+    console.log("cleared");
+    reset();
+    canClear = false;
+    working.textContent += 0;
+  } 
+  else if(opIndex === working.textContent.length - 1 && opHistory.length === 1) {
+    let temp = working.textContent;
+    reset();
+    working.textContent = temp;
+  }
+  else if (opIndex === working.textContent.length - 1) {
+    // Reset opstack and opIndex to what it was before op that was removed was placed
+    opIndexHistory.pop();
+    opHistory.pop();
+    opIndex = opIndexHistory[opIndexHistory.length - 1];
+    opStack.pop();
+    if (opHistory.length !== 0) opStack.push(opHistory[opHistory.length - 1]);
+    // revert numIndex and currVal to what they were before
+    numIndexHistory.pop();
+    numIndex = numIndexHistory[numIndexHistory.length - 1];
+    // numStack.shift;
+    currValHistory.pop();
+    currVal = currValHistory[currValHistory.length - 1];
+    // reset numStack when only one operand left since operation consists
+    // of first element and the second inputted one which is taken by lengthenNum
+    if (opHistory.length === 1) {
+      numStack = [];
+      numStack.push(numHistory[0]);
+    }
+    if (numHistory.length === 1) {
+      numHistory.pop();
+      numStack.pop();
+    }
+  }
+  working.textContent = working.textContent.slice(
+    0,
+    working.textContent.length - 1
+  );
 });
