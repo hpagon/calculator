@@ -7,7 +7,7 @@ const clear = document.querySelector("#C");
 const decimal = document.querySelector("#decimal");
 const del = document.querySelector("#del");
 const sign = document.querySelector("#sign");
-let operator;
+// let operator;
 let opIndex = 0;
 let numIndex = 0;
 let numStack = [];
@@ -59,19 +59,19 @@ function operate(num1, num2, operator) {
 }
 
 function findNum() {
-  let lastChar = working.textContent[working.textContent.length];
-  if (
-    lastChar === "+" ||
-    lastChar === "-" ||
-    lastChar === "x" ||
-    lastChar === "/"
-  )
-    return "";
+  // let lastChar = working.textContent[working.textContent.length];
+  // if (
+  //   lastChar === "+" ||
+  //   lastChar === "-" ||
+  //   lastChar === "x" ||
+  //   lastChar === "/"
+  // )
+  //   return "";
   opIndex = working.textContent.length;
   opIndexHistory.push(opIndex);
   let number = working.textContent.slice(numIndex, opIndex);
   //   console.log(number);
-  // if (number === "") return number;
+  if (number === "") return number;
   numStack.pop();
   numStack.push(number);
   numIndex = opIndex + 1;
@@ -193,6 +193,7 @@ for (let op of operators) {
       opIndexHistory.pop();
       opStack.pop();
       opHistory.pop();
+      opIndex--;
       working.textContent = working.textContent.slice(
         0,
         working.textContent.length - 1
@@ -277,25 +278,26 @@ del.addEventListener("click", () => {
       numStack = [];
       numStack.push(numHistory[0]);
     }
-    if (numHistory.length === 1) {
-      numHistory.pop();
-      numStack.pop();
-    }
+    // if (numHistory.length === 1) {
+    //   numHistory.pop();
+    //   numStack.pop();
+    // }
   }
   working.textContent = working.textContent.slice(
     0,
     working.textContent.length - 1
   );
-  let lastChar = working.textContent[working.textContent.length - 1];
-  if (
-    lastChar === "+" ||
-    lastChar === "-" ||
-    lastChar === "x" ||
-    lastChar === "/"
-  ) {
-    numStack.pop();
-    numHistory.pop();
-  }
+  // let lastChar = working.textContent[working.textContent.length - 1];
+  // if (
+  //   lastChar === "+" ||
+  //   lastChar === "-" ||
+  //   lastChar === "x" ||
+  //   lastChar === "/"
+  // ) {
+  //   numStack.pop();
+  //   numHistory.pop();
+  //   // numStack.unshift(numHistory[])
+  // }
 });
 
 sign.addEventListener("click", () => {
