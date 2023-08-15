@@ -119,7 +119,7 @@ function isInt(num) {
 }
 
 function updateResult() {
-  if (parseFloat(numStack[1]) === 0) {
+  if (parseFloat(numStack[1]) === 0 && opStack[0] === '/') {
     reset();
     result.textContent = "Can't divide by 0";
     divByZero = true;
@@ -149,7 +149,7 @@ function updateResult() {
 }
 
 function previewResult() {
-  if (parseFloat(numStack[1]) === 0) {
+  if (parseFloat(numStack[1]) === 0 && opStack[0] === '/') {
     result.textContent = "";
   } else if (numStack.length === 2 && currVal === undefined) {
     // console.log("triggered 2");
@@ -300,10 +300,9 @@ del.addEventListener("click", () => {
     if (number !== "") {
       numStack.push(number);
       previewResult();
-    } 
-    // else if (opHistory.length !== 0) {
-    //   result.textContent = currVal;
-    // }
+    } else if (currValHistory.length >= 2) {
+      result.textContent = currVal;
+    } else result.textContent = "";
   }
   working.textContent = working.textContent.slice(
     0,
