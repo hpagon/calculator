@@ -112,6 +112,7 @@ function reset() {
   numHistory = [];
   numIndexHistory = [0];
   currValHistory = [];
+  canDec = true;
 }
 
 function isInt(num) {
@@ -119,7 +120,7 @@ function isInt(num) {
 }
 
 function updateResult() {
-  if (parseFloat(numStack[1]) === 0 && opStack[0] === '/') {
+  if (parseFloat(numStack[1]) === 0 && opStack[0] === "/") {
     reset();
     result.textContent = "Can't divide by 0";
     divByZero = true;
@@ -149,7 +150,7 @@ function updateResult() {
 }
 
 function previewResult() {
-  if (parseFloat(numStack[1]) === 0 && opStack[0] === '/') {
+  if (parseFloat(numStack[1]) === 0 && opStack[0] === "/") {
     result.textContent = "";
   } else if (numStack.length === 2 && currVal === undefined) {
     // console.log("triggered 2");
@@ -243,8 +244,17 @@ decimal.addEventListener("click", () => {
     if (canClear === true) {
       reset();
       canClear = false;
+      working.textContent += decimal.textContent;
+    } else if (
+      working.textContent.slice(numIndex) === "" ||
+      working.textContent.slice(numIndex) === "-"
+    ) {
+      working.textContent += `0.`;
+      lengthenNum();
+      previewResult();
+    } else {
+      working.textContent += decimal.textContent;
     }
-    working.textContent += decimal.textContent;
     canDec = false;
   }
 });
@@ -263,6 +273,8 @@ del.addEventListener("click", () => {
     let temp = working.textContent;
     reset();
     working.textContent = temp;
+    canDec =
+      working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
   } else if (opIndex === working.textContent.length - 1) {
     // Reset opstack and opIndex to what it was before op that was removed was placed
     opIndexHistory.pop();
@@ -291,7 +303,10 @@ del.addEventListener("click", () => {
     //   numHistory.pop();
     //   numStack.pop();
     // }
+    canDec =
+      working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
   } else {
+    console.log("??");
     let number = working.textContent.slice(
       numIndex,
       working.textContent.length - 1
@@ -303,6 +318,8 @@ del.addEventListener("click", () => {
     } else if (currValHistory.length >= 2) {
       result.textContent = currVal;
     } else result.textContent = "";
+    if (working.textContent.charAt(working.textContent.length - 1) === ".")
+      canDec = true;
   }
   working.textContent = working.textContent.slice(
     0,
@@ -341,5 +358,3 @@ sign.addEventListener("click", () => {
 // switch operators, delete operator, place operator
 // need to create new replace operator function
 // op index is ahead by 1, throws everything off
-
-// is this really the new branch??
