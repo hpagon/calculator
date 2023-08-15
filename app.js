@@ -198,11 +198,15 @@ for (let op of operators) {
         0,
         working.textContent.length - 1
       );
+      working.textContent += op.textContent;
+      opStack.push(op.textContent);
+      opHistory.push(op.textContent);
+    } else {
+      working.textContent += op.textContent;
+      opStack.push(op.textContent);
+      opHistory.push(op.textContent);
+      updateResult();
     }
-    working.textContent += op.textContent;
-    opStack.push(op.textContent);
-    opHistory.push(op.textContent);
-    updateResult();
     if (divByZero === true) {
       let temp = result.textContent;
       reset();
@@ -269,18 +273,36 @@ del.addEventListener("click", () => {
     // revert numIndex and currVal to what they were before
     numIndexHistory.pop();
     numIndex = numIndexHistory[numIndexHistory.length - 1];
+    numHistory.pop();
     // numStack.shift;
     currValHistory.pop();
     currVal = currValHistory[currValHistory.length - 1];
     // reset numStack when only one operand left since operation consists
     // of first element and the second inputted one which is taken by lengthenNum
-    if (opHistory.length === 1) {
-      numStack = [];
-      numStack.push(numHistory[0]);
-    }
+    // if (opHistory.length === 1) {
+    //   numStack = [];
+    //   numStack.push(numHistory[0]);
+    // }
+    // else {
+    //   numStack.push()
+    // }
+    numStack.unshift(numHistory[numHistory.length - 1]);
     // if (numHistory.length === 1) {
     //   numHistory.pop();
     //   numStack.pop();
+    // }
+  } else {
+    let number = working.textContent.slice(
+      numIndex,
+      working.textContent.length - 1
+    );
+    numStack.pop();
+    if (number !== "") {
+      numStack.push(number);
+      previewResult();
+    } 
+    // else if (opHistory.length !== 0) {
+    //   result.textContent = currVal;
     // }
   }
   working.textContent = working.textContent.slice(
@@ -320,7 +342,5 @@ sign.addEventListener("click", () => {
 // switch operators, delete operator, place operator
 // need to create new replace operator function
 // op index is ahead by 1, throws everything off
-
-
 
 // is this really the new branch??
