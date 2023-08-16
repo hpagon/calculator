@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculator</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
@@ -15,25 +16,37 @@
           <h2 id="working">0</h2>
           <h3 id="result"></h3>
         </div>
-        <button id="0" class="number">0</button>
-        <button id="1"class="number">1</button>
-        <button id="2"class="number">2</button>
-        <button id="3"class="number">3</button>
-        <button id="4"class="number">4</button>
-        <button id="5"class="number">5</button>
-        <button id="6"class="number">6</button>
-        <button id="7"class="number">7</button>
-        <button id="8"class="number">8</button>
-        <button id="9"class="number">9</button>
-        <button id="add" class="operator">+</button>
-        <button id="sub" class="operator">-</button>
-        <button id="mult" class="operator">x</button>
-        <button id="div" class="operator">/</button>
-        <button id="eq">=</button>
-        <button id="C">C</button>
-        <button id="decimal">.</button>
-        <button id="del">del</button>
-        <button id="sign">+/-</button>
+        <div id="button">
+          <div class="row">
+            <button id="sign">+/-</button>
+            <button id="C">C</button>
+            <button id="del">del</button>
+            <button id="div" class="operator">/</button>
+          </div>
+          <div class="row">
+            <button id="7" class="number">7</button>
+            <button id="8" class="number">8</button>
+            <button id="9" class="number">9</button>
+            <button id="mult" class="operator">x</button>
+          </div>
+          <div class="row">
+            <button id="4" class="number">4</button>
+            <button id="5" class="number">5</button>
+            <button id="6" class="number">6</button>
+            <button id="sub" class="operator">-</button>
+          </div>
+          <div class="row">
+            <button id="1" class="number">1</button>
+            <button id="2" class="number">2</button>
+            <button id="3" class="number">3</button>
+            <button id="add" class="operator">+</button>
+          </div>
+          <div class="row">
+            <button id="0" class="number">0</button>
+            <button id="decimal">.</button>
+            <button id="eq">=</button>
+          </div>
+        </div>
       </div>
       <script src="app.js"></script>
     </main>
