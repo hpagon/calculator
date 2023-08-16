@@ -188,6 +188,7 @@ for (let num of numbers) {
 for (let op of operators) {
   op.addEventListener("click", () => {
     if (divByZero === true) return;
+    if (working.textContent.slice(numIndex) === "-") return;
     canClear = false;
     if (findNum() === "") {
       //   console.log("here?");
@@ -226,6 +227,7 @@ equals.addEventListener("click", () => {
   //   console.log("here1");
   //   if (result.textContent === "") return;
   if (numStack.length < 2) return;
+  if (working.textContent.slice(numIndex) === "-") return;
   else {
     // console.log("here2");
     let num = findNum();
@@ -314,7 +316,8 @@ del.addEventListener("click", () => {
     numStack.pop();
     if (number !== "") {
       numStack.push(number);
-      previewResult();
+      if (number === "-") result.textContent = currVal;
+      else previewResult();
     } else if (currValHistory.length >= 2) {
       result.textContent = currVal;
     } else result.textContent = "";
@@ -339,8 +342,10 @@ del.addEventListener("click", () => {
 });
 
 sign.addEventListener("click", () => {
+  if(divByZero === true) return;
   if (numIndex === working.textContent.length) {
     working.textContent += "-";
+    numStack.push("-");
   } else if (working.textContent.charAt(numIndex) === "-") {
     console.log("true");
     let pre = working.textContent.slice(0, numIndex);
@@ -348,10 +353,18 @@ sign.addEventListener("click", () => {
     console.log(pre);
     console.log(post);
     working.textContent = `${pre}${post}`;
+    if (post === "") {
+      numStack.pop();
+      return;
+    }
+    lengthenNum();
+    previewResult();
   } else {
     let pre = working.textContent.slice(0, numIndex);
     let post = working.textContent.slice(numIndex);
     working.textContent = `${pre}-${post}`;
+    lengthenNum();
+    previewResult();
   }
 });
 
