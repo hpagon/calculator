@@ -342,7 +342,7 @@ del.addEventListener("click", () => {
 });
 
 sign.addEventListener("click", () => {
-  if(divByZero === true) return;
+  if (divByZero === true) return;
   if (numIndex === working.textContent.length) {
     working.textContent += "-";
     numStack.push("-");
@@ -371,3 +371,7 @@ sign.addEventListener("click", () => {
 // switch operators, delete operator, place operator
 // need to create new replace operator function
 // op index is ahead by 1, throws everything off
+
+window.addEventListener("click", () => {
+  working.scrollLeft += 20;
+});

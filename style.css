@@ -1,69 +1,83 @@
 body {
-    margin: 0;
-    padding: 0;
-    /* border: 1px solid black; */
+  margin: 0;
+  padding: 0;
+  /* border: 1px solid black; */
+  font-family: "Cabin", sans-serif;
+  /* font-family: "Roboto", sans-serif; */
 }
 
 header {
-    display: flex;
-    justify-content: center;
-    /* border: 1px solid black; */
+  display: flex;
+  justify-content: center;
+  /* border: 1px solid black; */
 }
 
 main {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 #calculator {
-    border: 1px solid black;
-    border-radius: 12px;
-    width: 400px;
-    height: 550px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  border: 2px solid black;
+  border-radius: 12px;
+  width: 400px;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #screen {
-    border: 2px solid black;
-    width: 360px;
-    /* margin: 15px 0px; */
-    margin-top: 25px;
-    margin-bottom: 15px;
-    padding: 10px 0px;
-    border-radius: 12px;
+  border: 2px solid black;
+  width: 360px;
+  /* margin: 15px 0px; */
+  margin-top: 25px;
+  margin-bottom: 15px;
+  padding: 10px 0px;
+  border-radius: 12px;
+  font-weight: 400;
 }
 
 #working {
-    /* border: 1px solid black; */
-    margin: 15px 10px;
+  /* border: 1px solid black; */
+  margin: 15px 10px;
+  overflow: auto;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#working::-webkit-scrollbar {
+  display: none;
 }
 
 #result {
-    /* border: 1px solid black; */
-    height: 20px;
-    margin: 15px 10px;
+  /* border: 1px solid black; */
+  height: 20px;
+  margin: 15px 10px;
 }
 
 #button {
-    /* border: 1px solid black; */
-    padding-bottom: 20px;
-    padding-top: 10px;
+  /* border: 1px solid black; */
+  padding-bottom: 20px;
+  padding-top: 10px;
 }
 
 .row {
-    /* border: 1px solid black; */
-    display: flex;
-    justify-content: center;
+  /* border: 1px solid black; */
+  display: flex;
+  justify-content: center;
 }
 
 button {
-    width: 75px;
-    height: 60px;
-    margin: 5px;
+  width: 75px;
+  height: 60px;
+  margin: 5px;
+  border-radius: 12px;
+  font-family: "Cabin", sans-serif;
+  font-size: 18px;
 }
 
 #eq {
-    width: 160px;
+  width: 160px;
 }
