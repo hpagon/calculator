@@ -168,8 +168,147 @@ function previewResult() {
   }
 }
 
+// compartamentalized functions
+
+function decimalEvent() {
+  if (canDec) {
+    divByZero = false;
+    if (canClear === true) {
+      reset();
+      canClear = false;
+      working.textContent += decimal.textContent;
+    } else if (
+      working.textContent.slice(numIndex) === "" ||
+      working.textContent.slice(numIndex) === "-"
+    ) {
+      working.textContent += `0.`;
+      lengthenNum();
+      previewResult();
+    } else {
+      working.textContent += decimal.textContent;
+    }
+    canDec = false;
+  }
+}
+
+function deleteEvent() {
+  console.log("deleting");
+  if (canClear === true || working.textContent.length === 1) {
+    console.log("cleared");
+    reset();
+    canClear = false;
+    working.textContent += 0;
+  } else if (
+    opIndex === working.textContent.length - 1 &&
+    opHistory.length === 1
+  ) {
+    let temp = working.textContent;
+    reset();
+    working.textContent = temp;
+    canDec =
+      working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
+  } else if (opIndex === working.textContent.length - 1) {
+    // Reset opstack and opIndex to what it was before op that was removed was placed
+    opIndexHistory.pop();
+    opHistory.pop();
+    opIndex = opIndexHistory[opIndexHistory.length - 1];
+    opStack.pop();
+    if (opHistory.length !== 0) opStack.push(opHistory[opHistory.length - 1]);
+    // revert numIndex and currVal to what they were before
+    numIndexHistory.pop();
+    numIndex = numIndexHistory[numIndexHistory.length - 1];
+    numHistory.pop();
+    // numStack.shift;
+    currValHistory.pop();
+    currVal = currValHistory[currValHistory.length - 1];
+    // reset numStack when only one operand left since operation consists
+    // of first element and the second inputted one which is taken by lengthenNum
+    // if (opHistory.length === 1) {
+    //   numStack = [];
+    //   numStack.push(numHistory[0]);
+    // }
+    // else {
+    //   numStack.push()
+    // }
+    numStack.unshift(numHistory[numHistory.length - 1]);
+    // if (numHistory.length === 1) {
+    //   numHistory.pop();
+    //   numStack.pop();
+    // }
+    canDec =
+      working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
+  } else {
+    console.log("??");
+    let number = working.textContent.slice(
+      numIndex,
+      working.textContent.length - 1
+    );
+    numStack.pop();
+    if (number !== "") {
+      numStack.push(number);
+      if (number === "-") result.textContent = currVal;
+      else previewResult();
+    } else if (currValHistory.length >= 2) {
+      result.textContent = currVal;
+    } else result.textContent = "";
+    if (working.textContent.charAt(working.textContent.length - 1) === ".")
+      canDec = true;
+  }
+  working.textContent = working.textContent.slice(
+    0,
+    working.textContent.length - 1
+  );
+  // let lastChar = working.textContent[working.textContent.length - 1];
+  // if (
+  //   lastChar === "+" ||
+  //   lastChar === "-" ||
+  //   lastChar === "x" ||
+  //   lastChar === "/"
+  // ) {
+  //   numStack.pop();
+  //   numHistory.pop();
+  //   // numStack.unshift(numHistory[])
+  // }
+}
+
+function equalsEvent() {
+  if (canClear === true) return;
+  //   console.log("here1");
+  //   if (result.textContent === "") return;
+  if (numStack.length < 2) return;
+  if (working.textContent.slice(numIndex) === "-") return;
+  else {
+    // console.log("here2");
+    let num = findNum();
+    // console.log("but here???");
+    updateResult();
+    let temp = result.textContent;
+    reset();
+    working.textContent = temp;
+    canClear = true;
+  }
+}
+
+function numberEvent(e) {
+  console.log(e.type);
+  divByZero = false;
+  if (canClear === true) {
+    reset();
+    canClear = false;
+    working.textContent = e.key;
+  } else if (working.textContent === "0") working.textContent = e.key;
+  else {
+    working.textContent += e.key;
+    lengthenNum();
+    previewResult();
+  }
+}
+
+// compartamentalized functions
+
 for (let num of numbers) {
-  num.addEventListener("click", () => {
+  num.addEventListener("click", (e) => {
+    console.log(e.type);
     divByZero = false;
     if (canClear === true) {
       reset();
@@ -374,4 +513,84 @@ sign.addEventListener("click", () => {
 
 window.addEventListener("click", () => {
   working.scrollLeft += 20;
+});
+
+window.addEventListener("keydown", (e) => {
+  console.log(e.type);
+  switch (e.key) {
+    case "0":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "1":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "2":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "3":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "4":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "5":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "6":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "7":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "8":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "9":
+      console.log(`works for ${e.key}`);
+      numberEvent(e);
+      break;
+    case "+":
+      console.log(`works for ${e.key}`);
+      break;
+    case "-":
+      console.log(`works for ${e.key}`);
+      break;
+    case "x":
+      console.log(`works for ${e.key}`);
+      break;
+    case "*":
+      console.log(`works for ${e.key}`);
+      break;
+    case "/":
+      console.log(`works for ${e.key}`);
+      break;
+    case "=":
+      console.log(`works for ${e.key}`);
+      equalsEvent();
+      break;
+    case "Backspace":
+      console.log(`works for ${e.key}`);
+      deleteEvent();
+      break;
+    case ".":
+      console.log(`works for ${e.key}`);
+      decimalEvent();
+      break;
+    case "c":
+      console.log(`works for ${e.key}`);
+      reset();
+      break;
+    default:
+      console.log("error");
+      break;
+  }
 });
