@@ -198,6 +198,11 @@ function deleteEvent() {
     reset();
     canClear = false;
     working.textContent += 0;
+  } else if (numStack.length === 0 && opStack.length === 0) {
+    working.textContent = working.textContent.slice(
+      numIndex,
+      working.textContent.length - 1
+    );
   } else if (
     opIndex === working.textContent.length - 1 &&
     opHistory.length === 1
@@ -301,6 +306,37 @@ function numberEvent(e) {
     working.textContent += e.key;
     lengthenNum();
     previewResult();
+  }
+}
+
+function opEvent(e) {
+  if (divByZero === true) return;
+  if (working.textContent.slice(numIndex) === "-") return;
+  canClear = false;
+  if (findNum() === "") {
+    //   console.log("here?");
+    opIndexHistory.pop();
+    opStack.pop();
+    opHistory.pop();
+    opIndex--;
+    working.textContent = working.textContent.slice(
+      0,
+      working.textContent.length - 1
+    );
+    working.textContent += e.key;
+    opStack.push(e.key);
+    opHistory.push(e.key);
+  } else {
+    working.textContent += e.key;
+    opStack.push(e.key);
+    opHistory.push(e.key);
+    updateResult();
+  }
+  if (divByZero === true) {
+    let temp = result.textContent;
+    reset();
+    working.textContent = temp;
+    canClear = true;
   }
 }
 
@@ -516,7 +552,7 @@ window.addEventListener("click", () => {
 });
 
 window.addEventListener("keydown", (e) => {
-  console.log(e.type);
+  console.log(e.key);
   switch (e.key) {
     case "0":
       console.log(`works for ${e.key}`);
@@ -560,21 +596,28 @@ window.addEventListener("keydown", (e) => {
       break;
     case "+":
       console.log(`works for ${e.key}`);
+      opEvent(e);
       break;
     case "-":
       console.log(`works for ${e.key}`);
+      opEvent(e);
       break;
     case "x":
       console.log(`works for ${e.key}`);
+      opEvent(e);
       break;
     case "*":
       console.log(`works for ${e.key}`);
       break;
     case "/":
       console.log(`works for ${e.key}`);
+      opEvent(e);
       break;
     case "=":
       console.log(`works for ${e.key}`);
+      equalsEvent();
+      break;
+    case "Enter":
       equalsEvent();
       break;
     case "Backspace":
@@ -593,4 +636,5 @@ window.addEventListener("keydown", (e) => {
       console.log("error");
       break;
   }
+  working.scrollLeft += 20;
 });
