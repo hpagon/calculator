@@ -199,10 +199,8 @@ function deleteEvent() {
     canClear = false;
     working.textContent += 0;
   } else if (numStack.length === 0 && opStack.length === 0) {
-    working.textContent = working.textContent.slice(
-      numIndex,
-      working.textContent.length - 1
-    );
+    if (working.textContent.charAt(working.textContent.length - 1) === ".")
+      canDec = true;
   } else if (
     opIndex === working.textContent.length - 1 &&
     opHistory.length === 1
@@ -312,6 +310,7 @@ function numberEvent(e) {
 function opEvent(e) {
   if (divByZero === true) return;
   if (working.textContent.slice(numIndex) === "-") return;
+  let opString = e.key === "*" ? "x" : e.key;
   canClear = false;
   if (findNum() === "") {
     //   console.log("here?");
@@ -323,13 +322,13 @@ function opEvent(e) {
       0,
       working.textContent.length - 1
     );
-    working.textContent += e.key;
-    opStack.push(e.key);
-    opHistory.push(e.key);
+    working.textContent += opString;
+    opStack.push(opString);
+    opHistory.push(opString);
   } else {
-    working.textContent += e.key;
-    opStack.push(e.key);
-    opHistory.push(e.key);
+    working.textContent += opString;
+    opStack.push(opString);
+    opHistory.push(opString);
     updateResult();
   }
   if (divByZero === true) {
@@ -337,6 +336,33 @@ function opEvent(e) {
     reset();
     working.textContent = temp;
     canClear = true;
+  }
+}
+
+function signEvent() {
+  if (divByZero === true) return;
+  if (numIndex === working.textContent.length) {
+    working.textContent += "-";
+    numStack.push("-");
+  } else if (working.textContent.charAt(numIndex) === "-") {
+    console.log("true");
+    let pre = working.textContent.slice(0, numIndex);
+    let post = working.textContent.slice(numIndex + 1);
+    console.log(pre);
+    console.log(post);
+    working.textContent = `${pre}${post}`;
+    if (post === "") {
+      numStack.pop();
+      return;
+    }
+    lengthenNum();
+    previewResult();
+  } else {
+    let pre = working.textContent.slice(0, numIndex);
+    let post = working.textContent.slice(numIndex);
+    working.textContent = `${pre}-${post}`;
+    lengthenNum();
+    previewResult();
   }
 }
 
@@ -397,151 +423,13 @@ clear.addEventListener("click", reset, () => {
   divByZero = false;
 });
 
-equals.addEventListener("click", () => {
-  if (canClear === true) return;
-  //   console.log("here1");
-  //   if (result.textContent === "") return;
-  if (numStack.length < 2) return;
-  if (working.textContent.slice(numIndex) === "-") return;
-  else {
-    // console.log("here2");
-    let num = findNum();
-    // console.log("but here???");
-    updateResult();
-    let temp = result.textContent;
-    reset();
-    working.textContent = temp;
-    canClear = true;
-  }
-});
+equals.addEventListener("click", equalsEvent);
 
-decimal.addEventListener("click", () => {
-  if (canDec) {
-    divByZero = false;
-    if (canClear === true) {
-      reset();
-      canClear = false;
-      working.textContent += decimal.textContent;
-    } else if (
-      working.textContent.slice(numIndex) === "" ||
-      working.textContent.slice(numIndex) === "-"
-    ) {
-      working.textContent += `0.`;
-      lengthenNum();
-      previewResult();
-    } else {
-      working.textContent += decimal.textContent;
-    }
-    canDec = false;
-  }
-});
+decimal.addEventListener("click", decimalEvent);
 
-del.addEventListener("click", () => {
-  console.log("deleting");
-  if (canClear === true || working.textContent.length === 1) {
-    console.log("cleared");
-    reset();
-    canClear = false;
-    working.textContent += 0;
-  } else if (
-    opIndex === working.textContent.length - 1 &&
-    opHistory.length === 1
-  ) {
-    let temp = working.textContent;
-    reset();
-    working.textContent = temp;
-    canDec =
-      working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
-  } else if (opIndex === working.textContent.length - 1) {
-    // Reset opstack and opIndex to what it was before op that was removed was placed
-    opIndexHistory.pop();
-    opHistory.pop();
-    opIndex = opIndexHistory[opIndexHistory.length - 1];
-    opStack.pop();
-    if (opHistory.length !== 0) opStack.push(opHistory[opHistory.length - 1]);
-    // revert numIndex and currVal to what they were before
-    numIndexHistory.pop();
-    numIndex = numIndexHistory[numIndexHistory.length - 1];
-    numHistory.pop();
-    // numStack.shift;
-    currValHistory.pop();
-    currVal = currValHistory[currValHistory.length - 1];
-    // reset numStack when only one operand left since operation consists
-    // of first element and the second inputted one which is taken by lengthenNum
-    // if (opHistory.length === 1) {
-    //   numStack = [];
-    //   numStack.push(numHistory[0]);
-    // }
-    // else {
-    //   numStack.push()
-    // }
-    numStack.unshift(numHistory[numHistory.length - 1]);
-    // if (numHistory.length === 1) {
-    //   numHistory.pop();
-    //   numStack.pop();
-    // }
-    canDec =
-      working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
-  } else {
-    console.log("??");
-    let number = working.textContent.slice(
-      numIndex,
-      working.textContent.length - 1
-    );
-    numStack.pop();
-    if (number !== "") {
-      numStack.push(number);
-      if (number === "-") result.textContent = currVal;
-      else previewResult();
-    } else if (currValHistory.length >= 2) {
-      result.textContent = currVal;
-    } else result.textContent = "";
-    if (working.textContent.charAt(working.textContent.length - 1) === ".")
-      canDec = true;
-  }
-  working.textContent = working.textContent.slice(
-    0,
-    working.textContent.length - 1
-  );
-  // let lastChar = working.textContent[working.textContent.length - 1];
-  // if (
-  //   lastChar === "+" ||
-  //   lastChar === "-" ||
-  //   lastChar === "x" ||
-  //   lastChar === "/"
-  // ) {
-  //   numStack.pop();
-  //   numHistory.pop();
-  //   // numStack.unshift(numHistory[])
-  // }
-});
+del.addEventListener("click", deleteEvent);
 
-sign.addEventListener("click", () => {
-  if (divByZero === true) return;
-  if (numIndex === working.textContent.length) {
-    working.textContent += "-";
-    numStack.push("-");
-  } else if (working.textContent.charAt(numIndex) === "-") {
-    console.log("true");
-    let pre = working.textContent.slice(0, numIndex);
-    let post = working.textContent.slice(numIndex + 1);
-    console.log(pre);
-    console.log(post);
-    working.textContent = `${pre}${post}`;
-    if (post === "") {
-      numStack.pop();
-      return;
-    }
-    lengthenNum();
-    previewResult();
-  } else {
-    let pre = working.textContent.slice(0, numIndex);
-    let post = working.textContent.slice(numIndex);
-    working.textContent = `${pre}-${post}`;
-    lengthenNum();
-    previewResult();
-  }
-});
+sign.addEventListener("click", signEvent);
 
 // switch operators, delete operator, place operator
 // need to create new replace operator function
@@ -608,6 +496,7 @@ window.addEventListener("keydown", (e) => {
       break;
     case "*":
       console.log(`works for ${e.key}`);
+      opEvent(e);
       break;
     case "/":
       console.log(`works for ${e.key}`);
@@ -631,6 +520,10 @@ window.addEventListener("keydown", (e) => {
     case "c":
       console.log(`works for ${e.key}`);
       reset();
+      break;
+    case "ArrowUp":
+      console.log(`works for ${e.key}`);
+      signEvent();
       break;
     default:
       console.log("error");
