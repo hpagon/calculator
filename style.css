@@ -3,16 +3,13 @@
 body {
   margin: 0;
   padding: 0;
-  /* border: 1px solid black; */
   font-family: "Cabin", sans-serif;
-  /* font-family: "Roboto", sans-serif; */
   background-color: lightsteelblue;
 }
 
 header {
   display: flex;
   justify-content: center;
-  /* border: 1px solid black; */
 }
 
 h1 {
@@ -39,18 +36,15 @@ main {
 #screen {
   border: 2px solid black;
   width: 360px;
-  /* margin: 15px 0px; */
   margin-top: 25px;
   margin-bottom: 15px;
   padding: 10px 0px;
   border-radius: 12px;
   font-weight: 400;
-  /* background-color: #E8EBE4; */
   background-color: white;
 }
 
 #working {
-  /* border: 1px solid black; */
   margin: 15px 10px;
   overflow: auto;
   white-space: nowrap;
@@ -63,19 +57,16 @@ main {
 }
 
 #result {
-  /* border: 1px solid black; */
   height: 20px;
   margin: 15px 10px;
 }
 
 #button {
-  /* border: 1px solid black; */
   padding-bottom: 20px;
   padding-top: 10px;
 }
 
 .row {
-  /* border: 1px solid black; */
   display: flex;
   justify-content: center;
 }
@@ -91,7 +82,6 @@ button {
 
 button:hover {
   box-shadow: 1px 1px 1px;
-  /* scale: 1.01; */
 }
 
 .hit {
@@ -103,10 +93,4 @@ button:hover {
 #eq {
   width: 160px;
   background-color: #b8bacf;
-}
-
-.operator {
-  /* background-color: #E8EBE4; */
-  /* color: #798071; */
-  /* font-weight: 900; */
 }

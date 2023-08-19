@@ -7,7 +7,6 @@ const clear = document.querySelector("#C");
 const decimal = document.querySelector("#decimal");
 const del = document.querySelector("#del");
 const sign = document.querySelector("#sign");
-// let operator;
 let opIndex = 0;
 let numIndex = 0;
 let numStack = [];
@@ -59,9 +58,6 @@ function divide(num1, num2) {
 function operate(num1, num2, operator) {
   let newNum1 = parseFloat(num1);
   let newNum2 = parseFloat(num2);
-  //   console.log(`Num1: ${newNum1} - Num2: ${newNum2}`);
-  //   console.log(numStack);
-  //   console.log(opStack);
   switch (operator) {
     case "+":
       return add(newNum1, newNum2);
@@ -77,18 +73,9 @@ function operate(num1, num2, operator) {
 }
 
 function findNum() {
-  // let lastChar = working.textContent[working.textContent.length];
-  // if (
-  //   lastChar === "+" ||
-  //   lastChar === "-" ||
-  //   lastChar === "x" ||
-  //   lastChar === "/"
-  // )
-  //   return "";
   opIndex = working.textContent.length;
   opIndexHistory.push(opIndex);
   let number = working.textContent.slice(numIndex, opIndex);
-  //   console.log(number);
   if (number === "") return number;
   numStack.pop();
   numStack.push(number);
@@ -144,9 +131,6 @@ function updateResult() {
     divByZero = true;
   }
   if (numStack.length === 2 && currVal === undefined) {
-    // console.log("triggered");
-    // console.log(operate(numStack[0], numStack[1], opStack[0]));
-    // currVal = operate(numStack[0], numStack[1], opStack[0]);
     let num = operate(numStack[0], numStack[1], opStack[0]);
     if (isInt(num)) currVal = num;
     else currVal = parseFloat(num.toFixed(10));
@@ -154,11 +138,9 @@ function updateResult() {
     numStack.shift();
     opStack.shift();
   } else if (numStack.length === 2) {
-    // console.log("here");
     let num = operate(currVal, numStack[1], opStack[0]);
     if (isInt(num)) currVal = num;
     else currVal = parseFloat(num.toFixed(10));
-    // currVal = operate(currVal, numStack[1], opStack[0]);
     result.textContent = currVal;
     numStack.shift();
     opStack.shift();
@@ -171,22 +153,17 @@ function previewResult() {
   if (parseFloat(numStack[1]) === 0 && opStack[0] === "/") {
     result.textContent = "";
   } else if (numStack.length === 2 && currVal === undefined) {
-    // console.log("triggered 2");
-    // console.log(operate(numStack[0], numStack[1], opStack[0]));
-    // result.textContent = `${operate(numStack[0], numStack[1], opStack[0])}`;
     let num = operate(numStack[0], numStack[1], opStack[0]);
     if (isInt(num)) result.textContent = num;
     else result.textContent = parseFloat(num.toFixed(10));
   } else if (numStack.length === 2) {
-    // console.log("here 2");
-    // result.textContent = `${operate(currVal, numStack[1], opStack[0])}`;
     let num = operate(currVal, numStack[1], opStack[0]);
     if (isInt(num)) result.textContent = num;
     else result.textContent = parseFloat(num.toFixed(10));
   }
 }
 
-// compartamentalized functions
+// shared functions
 
 function decimalEvent() {
   decimal.classList.add("hit");
@@ -241,23 +218,11 @@ function deleteEvent() {
     numIndexHistory.pop();
     numIndex = numIndexHistory[numIndexHistory.length - 1];
     numHistory.pop();
-    // numStack.shift;
     currValHistory.pop();
     currVal = currValHistory[currValHistory.length - 1];
     // reset numStack when only one operand left since operation consists
     // of first element and the second inputted one which is taken by lengthenNum
-    // if (opHistory.length === 1) {
-    //   numStack = [];
-    //   numStack.push(numHistory[0]);
-    // }
-    // else {
-    //   numStack.push()
-    // }
     numStack.unshift(numHistory[numHistory.length - 1]);
-    // if (numHistory.length === 1) {
-    //   numHistory.pop();
-    //   numStack.pop();
-    // }
     canDec =
       working.textContent.slice(numIndex).indexOf(".") === -1 ? true : false;
   } else {
@@ -281,30 +246,15 @@ function deleteEvent() {
     0,
     working.textContent.length - 1
   );
-  // let lastChar = working.textContent[working.textContent.length - 1];
-  // if (
-  //   lastChar === "+" ||
-  //   lastChar === "-" ||
-  //   lastChar === "x" ||
-  //   lastChar === "/"
-  // ) {
-  //   numStack.pop();
-  //   numHistory.pop();
-  //   // numStack.unshift(numHistory[])
-  // }
 }
 
 function equalsEvent() {
   equals.classList.add("hit");
   if (canClear === true) return;
-  //   console.log("here1");
-  //   if (result.textContent === "") return;
   if (numStack.length < 2) return;
   if (working.textContent.slice(numIndex) === "-") return;
   else {
-    // console.log("here2");
     let num = findNum();
-    // console.log("but here???");
     updateResult();
     let temp = result.textContent;
     reset();
@@ -314,7 +264,6 @@ function equalsEvent() {
 }
 
 function numberEvent(e) {
-  // let but = document.querySelector(`#${e.key}`)
   console.log(parseFloat(e.key));
   numArray[parseFloat(e.key)].classList.add("hit");
   divByZero = false;
@@ -337,7 +286,6 @@ function opEvent(e) {
   if (working.textContent.slice(numIndex) === "-") return;
   canClear = false;
   if (findNum() === "") {
-    //   console.log("here?");
     opIndexHistory.pop();
     opStack.pop();
     opHistory.pop();
@@ -400,7 +348,7 @@ function removeStyling(e) {
   this.classList.remove("hit");
 }
 
-// compartamentalized functions
+// shared functions
 
 for (let num of numbers) {
   num.addEventListener("click", (e) => {
@@ -418,7 +366,6 @@ for (let num of numbers) {
       lengthenNum();
       previewResult();
     }
-    // num.classList.remove("hit");
   });
   num.addEventListener("transitionend", removeStyling);
 }
@@ -430,7 +377,6 @@ for (let op of operators) {
     if (working.textContent.slice(numIndex) === "-") return;
     canClear = false;
     if (findNum() === "") {
-      //   console.log("here?");
       opIndexHistory.pop();
       opStack.pop();
       opHistory.pop();
@@ -474,9 +420,6 @@ del.addEventListener("transitionend", removeStyling);
 sign.addEventListener("click", signEvent);
 sign.addEventListener("transitionend", removeStyling);
 
-// switch operators, delete operator, place operator
-// need to create new replace operator function
-// op index is ahead by 1, throws everything off
 
 window.addEventListener("click", () => {
   working.scrollLeft += 20;
@@ -487,7 +430,6 @@ window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "0":
       console.log(`works for ${e.key}`);
-      // document.querySelector(`#${e.key}`).classList.add("hit");
       numberEvent(e);
       break;
     case "1":
