@@ -21,6 +21,24 @@ let numIndexHistory = [0];
 let opHistory = [];
 let opIndexHistory = [0];
 currValHistory = [];
+const numArray = [
+  document.querySelector("#zero"),
+  document.querySelector("#one"),
+  document.querySelector("#two"),
+  document.querySelector("#three"),
+  document.querySelector("#four"),
+  document.querySelector("#five"),
+  document.querySelector("#six"),
+  document.querySelector("#seven"),
+  document.querySelector("#eight"),
+  document.querySelector("#nine"),
+];
+const opObject = {
+  "+": document.querySelector("#add"),
+  "-": document.querySelector("#sub"),
+  "x": document.querySelector("#mult"),
+  "/": document.querySelector("#div"),
+};
 
 function add(num1, num2) {
   return num1 + num2;
@@ -171,6 +189,7 @@ function previewResult() {
 // compartamentalized functions
 
 function decimalEvent() {
+  decimal.classList.add("hit");
   if (canDec) {
     divByZero = false;
     if (canClear === true) {
@@ -192,6 +211,7 @@ function decimalEvent() {
 }
 
 function deleteEvent() {
+  del.classList.add("hit");
   console.log("deleting");
   if (canClear === true || working.textContent.length === 1) {
     console.log("cleared");
@@ -275,6 +295,7 @@ function deleteEvent() {
 }
 
 function equalsEvent() {
+  equals.classList.add("hit");
   if (canClear === true) return;
   //   console.log("here1");
   //   if (result.textContent === "") return;
@@ -293,7 +314,9 @@ function equalsEvent() {
 }
 
 function numberEvent(e) {
-  console.log(e.type);
+  // let but = document.querySelector(`#${e.key}`)
+  console.log(parseFloat(e.key));
+  numArray[parseFloat(e.key)].classList.add("hit");
   divByZero = false;
   if (canClear === true) {
     reset();
@@ -308,9 +331,10 @@ function numberEvent(e) {
 }
 
 function opEvent(e) {
+  let opString = e.key === "*" ? "x" : e.key;
+  opObject[`${opString}`].classList.add("hit");
   if (divByZero === true) return;
   if (working.textContent.slice(numIndex) === "-") return;
-  let opString = e.key === "*" ? "x" : e.key;
   canClear = false;
   if (findNum() === "") {
     //   console.log("here?");
@@ -340,6 +364,7 @@ function opEvent(e) {
 }
 
 function signEvent() {
+  sign.classList.add("hit");
   if (divByZero === true) return;
   if (numIndex === working.textContent.length) {
     working.textContent += "-";
@@ -366,11 +391,21 @@ function signEvent() {
   }
 }
 
+function clearHit() {
+  divByZero = false;
+  clear.classList.add("hit");
+}
+
+function removeStyling(e) {
+  this.classList.remove("hit");
+}
+
 // compartamentalized functions
 
 for (let num of numbers) {
   num.addEventListener("click", (e) => {
-    console.log(e.type);
+    console.log(e);
+    num.classList.add("hit");
     divByZero = false;
     if (canClear === true) {
       reset();
@@ -383,11 +418,14 @@ for (let num of numbers) {
       lengthenNum();
       previewResult();
     }
+    // num.classList.remove("hit");
   });
+  num.addEventListener("transitionend", removeStyling);
 }
 
 for (let op of operators) {
   op.addEventListener("click", () => {
+    op.classList.add("hit");
     if (divByZero === true) return;
     if (working.textContent.slice(numIndex) === "-") return;
     canClear = false;
@@ -417,19 +455,24 @@ for (let op of operators) {
       canClear = true;
     }
   });
+  op.addEventListener("transitionend", removeStyling);
 }
 
-clear.addEventListener("click", reset, () => {
-  divByZero = false;
-});
+clear.addEventListener("click", reset);
+clear.addEventListener("click", clearHit);
+clear.addEventListener("transitionend", removeStyling);
 
 equals.addEventListener("click", equalsEvent);
+equals.addEventListener("transitionend", removeStyling);
 
 decimal.addEventListener("click", decimalEvent);
+decimal.addEventListener("transitionend", removeStyling);
 
 del.addEventListener("click", deleteEvent);
+del.addEventListener("transitionend", removeStyling);
 
 sign.addEventListener("click", signEvent);
+sign.addEventListener("transitionend", removeStyling);
 
 // switch operators, delete operator, place operator
 // need to create new replace operator function
@@ -440,10 +483,11 @@ window.addEventListener("click", () => {
 });
 
 window.addEventListener("keydown", (e) => {
-  console.log(e.key);
+  console.log(e);
   switch (e.key) {
     case "0":
       console.log(`works for ${e.key}`);
+      // document.querySelector(`#${e.key}`).classList.add("hit");
       numberEvent(e);
       break;
     case "1":
@@ -519,6 +563,7 @@ window.addEventListener("keydown", (e) => {
       break;
     case "c":
       console.log(`works for ${e.key}`);
+      clearHit();
       reset();
       break;
     case "ArrowUp":
